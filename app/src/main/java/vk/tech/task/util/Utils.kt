@@ -14,7 +14,6 @@ suspend fun <R> runSuspendCatching(
             if (it is CancellationException) {
                 throw it
             } else {
-                throw it
                 Log.println(Log.ERROR, "Internal catching", it.message!!)
                 onError.invoke()
             }

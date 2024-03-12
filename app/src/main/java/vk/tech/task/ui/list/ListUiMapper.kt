@@ -4,7 +4,6 @@ import vk.tech.task.domain.model.ProductModel
 import javax.inject.Inject
 
 class ListUiMapper @Inject constructor() {
-
     operator fun invoke(data: List<ProductModel>): List<ProductPreviewUiModel> =
         data.map {
             ProductPreviewUiModel(

@@ -6,3 +6,5 @@ data class ProductPreviewUiModel(
     val category: String,
     val imgUrl: String
 )
+
+data class ChipsUiModel(val name: String, val selected: Boolean)

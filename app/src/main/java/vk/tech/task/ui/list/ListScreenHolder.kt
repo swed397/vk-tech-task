@@ -1,6 +1,6 @@
 package vk.tech.task.ui.list
 
-import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
@@ -12,13 +12,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.flowWithLifecycle
 import androidx.navigation.NavController
 import vk.tech.task.App
 import vk.tech.task.di.injectedViewModel
-import vk.tech.task.ui.theme.ErrorScreen
+import vk.tech.task.ui.list.components.ChipsPicker
 import vk.tech.task.ui.list.components.ProductsList
 import vk.tech.task.ui.list.components.SearchText
+import vk.tech.task.ui.theme.ErrorScreen
 
 @Composable
 fun ListScreenHolder(navController: NavController? = null) {
@@ -56,17 +58,28 @@ private fun ListScreen(state: ListScreenUiState, obtainEvent: (ListUiEvent) -> U
 
 @Composable
 private fun MainState(state: ListScreenUiState.Content, obtainEvent: (ListUiEvent) -> Unit) {
-//    Scaffold(
-//        topBar = { SearchText(onSearchText = { obtainEvent.invoke(ListUiEvent.SearchByQuery(query = it)) }) }
-//    ) { paddingValue ->
+    Scaffold(
+        topBar = {
+            Column {
+                SearchText(
+                    value = state.query,
+                    onSearchText = { obtainEvent.invoke(ListUiEvent.SearchByQuery(query = it)) })
+                ChipsPicker(
+                    listCategories = state.categoriesChips,
+                    onClick = { obtainEvent.invoke(ListUiEvent.SelectCategory(it)) },
+                    modifier = Modifier.padding(top = 5.dp)
+                )
+            }
+        }
+    ) { paddingValue ->
         ProductsList(
             data = state.items,
             showLoadingProgressBar = state.loadingNewPage,
             onClickItemEvent = { obtainEvent.invoke(ListUiEvent.NavigateToProductDetails(productId = it)) },
             onListEndEvent = { obtainEvent.invoke(ListUiEvent.AddPageInData) },
-//            modifier = Modifier.padding(paddingValue)
+            modifier = Modifier.padding(paddingValue)
         )
-//    }
+    }
 }
 
 @Composable
@@ -98,7 +111,15 @@ private fun ListScreenPreviewData() {
             imgUrl = "",
         )
     )
-    ListScreen(state = ListScreenUiState.Content(items = data), obtainEvent = {})
+    val categories = listOf(
+        ChipsUiModel(name = "smartphones", selected = true),
+        ChipsUiModel(name = "car", selected = false)
+    )
+
+
+    ListScreen(
+        state = ListScreenUiState.Content(items = data, categoriesChips = categories),
+        obtainEvent = {})
 }
 
 @Composable

@@ -27,4 +27,9 @@ class NetworkRepositoryImp @Inject constructor(private val api: ProductApi) : Ne
 
     override suspend fun getProductsPagingBySearchQuery(query: String): List<ProductModel> =
         api.getProductsPagingWithQuery(query = query).products.map { it.toModel() }
+
+    override suspend fun getCategories(): List<String> = api.getCategories()
+
+    override suspend fun getProductsByCategory(category: String): List<ProductModel> =
+        api.getProductsByCategory(category = category).products.map { it.toModel() }
 }

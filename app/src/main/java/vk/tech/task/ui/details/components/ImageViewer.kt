@@ -24,7 +24,7 @@ import vk.tech.task.R
 @Composable
 fun ImageViewer(imagesUrlList: List<String>, showItemIndex: Int?, onClickItem: (Int) -> Unit) {
 
-    if (showItemIndex != null ) {
+    if (showItemIndex != null) {
         SubcomposeAsyncImage(
             model = imagesUrlList[showItemIndex],
             contentDescription = "show image",
@@ -32,7 +32,7 @@ fun ImageViewer(imagesUrlList: List<String>, showItemIndex: Int?, onClickItem: (
             modifier = Modifier
                 .fillMaxWidth()
                 .height(300.dp)
-                .padding(bottom = 15.dp, top = 30.dp)
+                .padding(bottom = 15.dp, top = 10.dp)
         )
     } else {
         EmptyImage(

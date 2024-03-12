@@ -11,4 +11,8 @@ interface NetworkRepo {
     suspend fun getProductById(productId: Long): ProductModel
 
     suspend fun getProductsPagingBySearchQuery(query: String): List<ProductModel>
+
+    suspend fun getCategories(): List<String>
+
+    suspend fun getProductsByCategory(category: String): List<ProductModel>
 }

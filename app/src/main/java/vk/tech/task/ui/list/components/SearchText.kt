@@ -26,8 +26,8 @@ import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
-fun SearchText(onSearchText: (String) -> Unit) {
-    var searchText by remember { mutableStateOf("") }
+fun SearchText(value: String = "", onSearchText: (String) -> Unit) {
+    var searchText by remember { mutableStateOf(value) }
     val keyboardController = LocalSoftwareKeyboardController.current
 
     Row(

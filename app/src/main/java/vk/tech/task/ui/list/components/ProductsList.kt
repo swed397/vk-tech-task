@@ -13,10 +13,14 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import vk.tech.task.ui.list.ProductPreviewUiModel
 
 
@@ -29,12 +33,6 @@ fun ProductsList(
     modifier: Modifier = Modifier
 ) {
     val listState = rememberLazyListState()
-    listState.canScrollForward
-    val endOfListReached by remember {
-        derivedStateOf {
-            listState.isScrolledToEnd()
-        }
-    }
 
     Box(modifier = modifier.fillMaxSize()) {
         LazyColumn(
@@ -52,14 +50,18 @@ fun ProductsList(
         }
     }
 
-    LaunchedEffect(endOfListReached) {
-        println("TRIGER")
-//            onListEndEvent.invoke()
+    LaunchedEffect(Unit) {
+        snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
+            .filterNotNull()
+            .onEach { lastIndex ->
+                if (lastIndex == listState.layoutInfo.totalItemsCount - 3) {
+                    onListEndEvent.invoke()
+                }
+            }
+            .launchIn(this)
     }
 }
 
-private fun LazyListState.isScrolledToEnd() =
-    layoutInfo.visibleItemsInfo.lastOrNull()?.index == layoutInfo.totalItemsCount - 1
 
 @Composable
 @Preview(showBackground = true)

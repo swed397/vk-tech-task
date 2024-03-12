@@ -1,6 +1,5 @@
 package vk.tech.task.ui.details
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,7 +11,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -68,11 +66,13 @@ private fun MainScreen(
     onClickItem: (Int) -> Unit,
     onNavigateBack: () -> Unit
 ) {
-    Box(contentAlignment = Alignment.TopStart) {
-        BackNav(
-            onNavigateBack = onNavigateBack,
-            modifier = Modifier.padding(top = 10.dp, start = 10.dp)
-        )
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = 10.dp)
+            .verticalScroll(state = rememberScrollState())
+    ) {
+        BackNav(onNavigateBack = onNavigateBack)
 
         Text(
             text = productState.item.title,
@@ -80,18 +80,9 @@ private fun MainScreen(
             fontSize = 35.sp,
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 10.dp, bottom = 20.dp)
+            modifier = Modifier.fillMaxWidth()
         )
-    }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(top = 40.dp)
-            .verticalScroll(state = rememberScrollState())
-    ) {
         ImageViewer(
             imagesUrlList = productState.item.imagesList,
             showItemIndex = productState.showImageItem,
