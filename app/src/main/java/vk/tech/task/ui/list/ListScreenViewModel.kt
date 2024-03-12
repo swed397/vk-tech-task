@@ -9,13 +9,19 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import vk.tech.task.domain.usecase.AddNewPageUsecase
 import vk.tech.task.domain.repo.NetworkRepo
+import vk.tech.task.domain.usecase.SearchByQueryUsecase
+import vk.tech.task.domain.usecase.SelectCategoryUsecase
 import vk.tech.task.ui.nav.Routes
 import vk.tech.task.util.runSuspendCatching
 
 class ListScreenViewModel @AssistedInject constructor(
     private val networkRepo: NetworkRepo,
-    private val uiMapper: ListUiMapper
+    private val uiMapper: ListUiMapper,
+    private val addNewPageUsecase: AddNewPageUsecase,
+    private val searchByQueryUsecase: SearchByQueryUsecase,
+    private val selectCategoryUsecase: SelectCategoryUsecase,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<ListScreenUiState>(ListScreenUiState.Loading)
@@ -34,6 +40,7 @@ class ListScreenViewModel @AssistedInject constructor(
             is ListUiEvent.NavigateToProductDetails -> navigateToProductDetails(productId = event.productId)
             is ListUiEvent.SearchByQuery -> searchByQuery(event.query)
             is ListUiEvent.SelectCategory -> selectCategory(event.category)
+            is ListUiEvent.Reload -> init()
         }
     }
 
@@ -44,16 +51,11 @@ class ListScreenViewModel @AssistedInject constructor(
                     runSuspendCatching(
                         action = {
                             _state.value = ListScreenUiState.Loading
-
-                            val newChipsList = currentState.categoriesChips
-                                .map { it.copy(selected = if (it.name == category) it.selected.not() else false) }
-                                .toMutableList()
-
-                            val data =
-                                if (newChipsList.firstOrNull { it.selected } != null)
-                                    networkRepo.getProductsByCategory(category) else networkRepo.getAllProductsPaging()
-
-                            data to newChipsList
+                            selectCategoryUsecase(
+                                repo = networkRepo,
+                                currentState = currentState,
+                                category = category
+                            )
                         },
                         onSuccess = { data ->
                             _state.value =
@@ -80,16 +82,11 @@ class ListScreenViewModel @AssistedInject constructor(
                     runSuspendCatching(
                         action = {
                             _state.value = ListScreenUiState.Loading
-                            val data = if (query.isEmpty().not())
-                                networkRepo.getProductsPagingBySearchQuery(query = query.lowercase())
-                            else
-                                networkRepo.getAllProductsPaging()
-
-                            if (currentState.selectedCategory != null) {
-                                data.filter { it.category == currentState.selectedCategory }
-                            } else {
-                                data
-                            }
+                            searchByQueryUsecase(
+                                repo = networkRepo,
+                                currentState = currentState,
+                                query = query
+                            )
                         },
                         onSuccess = { data ->
                             _state.value =
@@ -121,18 +118,7 @@ class ListScreenViewModel @AssistedInject constructor(
                     runSuspendCatching(
                         action = {
                             _state.value = currentState.copy(loadingNewPage = true)
-                            val data = if (currentState.query.isEmpty()) {
-                                networkRepo.getNewPage(skipValue = currentState.items.size.toLong())
-                            } else {
-                                networkRepo.getNewPage(
-                                    skipValue = currentState.items.size.toLong(),
-                                    query = currentState.query
-                                )
-                            }
-                            if (currentState.selectedCategory.isNullOrEmpty().not()) {
-                                data.filter { it.category == currentState.selectedCategory }
-                            }
-                            data
+                            addNewPageUsecase(repo = networkRepo, currentState = currentState)
                         },
                         onSuccess = { data ->
                             _state.value =

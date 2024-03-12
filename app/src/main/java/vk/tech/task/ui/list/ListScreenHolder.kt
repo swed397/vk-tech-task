@@ -51,7 +51,7 @@ fun ListScreenHolder(navController: NavController? = null) {
 private fun ListScreen(state: ListScreenUiState, obtainEvent: (ListUiEvent) -> Unit) {
     when (state) {
         is ListScreenUiState.Content -> MainState(state = state, obtainEvent = obtainEvent)
-        is ListScreenUiState.Error -> ErrorScreen()
+        is ListScreenUiState.Error -> ErrorScreen(onClickButton = { obtainEvent.invoke(ListUiEvent.Reload) })
         is ListScreenUiState.Loading -> LinearProgressIndicator()
     }
 }

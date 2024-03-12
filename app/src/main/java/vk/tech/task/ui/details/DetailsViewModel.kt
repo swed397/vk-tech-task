@@ -26,6 +26,7 @@ class DetailsViewModel @AssistedInject constructor(
     fun obtainEvent(event: DetailsScreenUiEvent) {
         when (event) {
             is DetailsScreenUiEvent.ShowNewImage -> showNewItem(event.itemIndex)
+            is DetailsScreenUiEvent.Reload -> init(productId = productId)
         }
     }
 

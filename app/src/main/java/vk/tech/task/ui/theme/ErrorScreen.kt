@@ -3,7 +3,10 @@ package vk.tech.task.ui.theme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,7 +21,7 @@ import androidx.compose.ui.unit.sp
 import vk.tech.task.R
 
 @Composable
-fun ErrorScreen() {
+fun ErrorScreen(onClickButton: () -> Unit) {
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -42,11 +45,17 @@ fun ErrorScreen() {
             textAlign = TextAlign.Center,
             color = Color.Red
         )
+        Button(
+            onClick = onClickButton,
+            modifier = Modifier.padding(top = 10.dp)
+        ) {
+            Text(text = "Reload")
+        }
     }
 }
 
 @Composable
 @Preview(showBackground = true)
 private fun ErrorScreenPreview() {
-    ErrorScreen()
+    ErrorScreen(onClickButton = {})
 }

@@ -25,6 +25,7 @@ import vk.tech.task.domain.model.ProductModel
 import vk.tech.task.ui.details.components.BackNav
 import vk.tech.task.ui.details.components.ImageViewer
 import vk.tech.task.ui.details.components.ProductDetail
+import vk.tech.task.ui.list.ListUiEvent
 import vk.tech.task.ui.theme.ErrorScreen
 
 @Composable
@@ -55,7 +56,12 @@ private fun DetailsScreen(
             onClickItem = { obtainEvent.invoke(DetailsScreenUiEvent.ShowNewImage(itemIndex = it)) }
         )
 
-        is DetailsScreenUiState.Error -> ErrorScreen()
+        is DetailsScreenUiState.Error -> ErrorScreen(onClickButton = {
+            obtainEvent(
+                DetailsScreenUiEvent.Reload
+            )
+        })
+
         is DetailsScreenUiState.Loading -> LinearProgressIndicator()
     }
 }
