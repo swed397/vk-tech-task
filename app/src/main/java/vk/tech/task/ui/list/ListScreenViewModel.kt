@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import vk.tech.task.domain.model.ProductModel
 import vk.tech.task.domain.repo.NetworkRepo
 import vk.tech.task.ui.nav.Routes
 import vk.tech.task.util.runSuspendCatching
