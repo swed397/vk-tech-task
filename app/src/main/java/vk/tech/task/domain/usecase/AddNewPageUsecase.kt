@@ -2,7 +2,6 @@ package vk.tech.task.domain.usecase
 
 import vk.tech.task.domain.model.ProductModel
 import vk.tech.task.domain.repo.NetworkRepo
-import vk.tech.task.ui.list.ListUiEvent
 import vk.tech.task.ui.list.ProductPreviewUiModel
 import javax.inject.Inject
 

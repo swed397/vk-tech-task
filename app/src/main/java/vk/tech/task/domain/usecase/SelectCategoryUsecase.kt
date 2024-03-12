@@ -3,7 +3,6 @@ package vk.tech.task.domain.usecase
 import vk.tech.task.domain.model.ProductModel
 import vk.tech.task.domain.repo.NetworkRepo
 import vk.tech.task.ui.list.ChipsUiModel
-import vk.tech.task.ui.list.ListScreenUiState
 import javax.inject.Inject
 
 class SelectCategoryUsecase @Inject constructor() {
