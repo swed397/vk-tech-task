@@ -10,10 +10,10 @@ class SelectCategoryUsecase @Inject constructor() {
 
     suspend operator fun invoke(
         repo: NetworkRepo,
-        currentState: ListScreenUiState.Content,
+        categoriesChips: List<ChipsUiModel>,
         category: String
     ): Pair<List<ProductModel>, List<ChipsUiModel>> {
-        val newChipsList = currentState.categoriesChips
+        val newChipsList = categoriesChips
             .map { it.copy(selected = if (it.name == category) it.selected.not() else false) }
             .toMutableList()
 

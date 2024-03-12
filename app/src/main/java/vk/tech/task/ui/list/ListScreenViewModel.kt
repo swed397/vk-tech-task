@@ -9,8 +9,8 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import vk.tech.task.domain.usecase.AddNewPageUsecase
 import vk.tech.task.domain.repo.NetworkRepo
+import vk.tech.task.domain.usecase.AddNewPageUsecase
 import vk.tech.task.domain.usecase.SearchByQueryUsecase
 import vk.tech.task.domain.usecase.SelectCategoryUsecase
 import vk.tech.task.ui.nav.Routes
@@ -53,7 +53,7 @@ class ListScreenViewModel @AssistedInject constructor(
                             _state.value = ListScreenUiState.Loading
                             selectCategoryUsecase(
                                 repo = networkRepo,
-                                currentState = currentState,
+                                categoriesChips = currentState.categoriesChips,
                                 category = category
                             )
                         },
@@ -82,9 +82,9 @@ class ListScreenViewModel @AssistedInject constructor(
                     runSuspendCatching(
                         action = {
                             _state.value = ListScreenUiState.Loading
-                            searchByQueryUsecase(
+                            searchByQueryUsecase.invoke(
                                 repo = networkRepo,
-                                currentState = currentState,
+                                selectedCategory = currentState.selectedCategory,
                                 query = query
                             )
                         },
@@ -118,7 +118,12 @@ class ListScreenViewModel @AssistedInject constructor(
                     runSuspendCatching(
                         action = {
                             _state.value = currentState.copy(loadingNewPage = true)
-                            addNewPageUsecase(repo = networkRepo, currentState = currentState)
+                            addNewPageUsecase(
+                                repo = networkRepo,
+                                items = currentState.items,
+                                query = currentState.query,
+                                selectedCategory = currentState.selectedCategory
+                            )
                         },
                         onSuccess = { data ->
                             _state.value =
